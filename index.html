@@ -1,7 +1,8 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Board de Botones</title>
+  <title>Board de Arbitraje Mejorado</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <style>
     body, html {
       margin: 0;
@@ -9,6 +10,7 @@
       height: 100%;
       font-family: 'Arial', sans-serif;
       background: url('https://lh7-rt.googleusercontent.com/docsz/AD_4nXd8IVSrUv6WHZPM8B8WMUOZohvHaj-gEIwps4SHk4RkytrrzZGfxjpYC7sLBE8I3znsAAQCjVU9v3dkz2PtF2IskEOMsx8ae9Qucj-fXrEEmHX3lQCcQTuxpqkoIOvac7JiyetbZA?key=4sQS9lUwzWk20lTx-689Mw') no-repeat center center fixed;
+      background-size: cover;
       color: #fff;
       display: flex;
       justify-content: center;
@@ -17,29 +19,68 @@
     .container {
       text-align: center;
       padding: 20px;
-      background: rgba(255, 255, 255, 0.1);
+      background: rgba(255, 255, 255, 0.2);
       border-radius: 15px;
       box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.3);
       backdrop-filter: blur(10px);
       width: 90%;
-      max-width: 500px;
-      border: 2px solid black; /* Bordes negros */
+      max-width: 600px;
+      border: 2px solid black;
     }
     .title {
-      font-size: 32px;
+      font-size: 28px;
       font-weight: bold;
       margin-bottom: 20px;
       text-shadow: 0 4px 6px rgba(0, 0, 0, 0.4);
     }
+    .scoreboard {
+      display: flex;
+      justify-content: space-around;
+      margin-bottom: 20px;
+      gap: 10px;
+    }
+    .score {
+      background: rgba(0, 0, 0, 0.5);
+      padding: 10px;
+      border-radius: 10px;
+      box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.3);
+      min-width: 100px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    .score h3 {
+      margin: 0;
+      font-size: 16px;
+    }
+    .score span {
+      font-size: 24px;
+      font-weight: bold;
+    }
+    .score button {
+      margin: 5px;
+      padding: 5px 10px;
+      font-size: 16px;
+      cursor: pointer;
+      border: none;
+      border-radius: 5px;
+      background-color: #ffffff;
+      color: #333;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+      transition: background-color 0.3s ease;
+    }
+    .score button:hover {
+      background-color: #f0f0f0;
+    }
     .buttonContainer {
       display: flex;
-      flex-wrap: wrap;
       justify-content: center;
       gap: 15px;
+      margin-bottom: 20px;
     }
     .buttonSquare {
-      width: 100px;
-      height: 100px;
+      width: 120px;
+      height: 120px;
       background: linear-gradient(145deg, #ffffff, #dcdcdc);
       border-radius: 10px;
       display: flex;
@@ -54,7 +95,7 @@
       box-shadow: 0 10px 15px rgba(0, 0, 0, 0.4);
     }
     .buttonText {
-      font-size: 16px;
+      font-size: 20px;
       font-weight: bold;
       color: #333;
       text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
@@ -64,23 +105,54 @@
       font-size: 12px;
       color: rgba(255, 255, 255, 0.8);
     }
+    @media (max-width: 600px) {
+      .buttonSquare {
+        width: 100px;
+        height: 100px;
+      }
+      .title {
+        font-size: 24px;
+      }
+      .score span {
+        font-size: 20px;
+      }
+    }
   </style>
 </head>
 <body>
   <div class="container">
-    <div class="title">Board de Botones</div>
+    <div class="title">Board de Arbitraje</div>
+    <div class="scoreboard">
+      <div class="score">
+        <h3>Jugador A</h3>
+        <span id="playerA">0</span>
+        <button onclick="incrementPlayer('playerA', 1)">+</button>
+        <button onclick="incrementPlayer('playerA', -1)">-</button>
+      </div>
+      <div class="score">
+        <h3>Jugador B</h3>
+        <span id="playerB">0</span>
+        <button onclick="incrementPlayer('playerB', 1)">+</button>
+        <button onclick="incrementPlayer('playerB', -1)">-</button>
+      </div>
+    </div>
+    <div class="scoreboard">
+      <div class="score">
+        <h3>Games</h3>
+        <span id="games">0</span>
+        <button onclick="incrementScore('games', 1)">+</button>
+        <button onclick="incrementScore('games', -1)">-</button>
+      </div>
+      <div class="score">
+        <h3>Sets</h3>
+        <span id="sets">0</span>
+        <button onclick="incrementScore('sets', 1)">+</button>
+        <button onclick="incrementScore('sets', -1)">-</button>
+      </div>
+    </div>
     <div class="buttonContainer">
-      <div class="buttonSquare" onclick="playSound()">
+      <div class="buttonSquare" onclick="playSound();">
         <div class="buttonText">OUT</div>
-      </div>
-      <div class="buttonSquare" onclick="alert('Let')">
-        <div class="buttonText">LET</div>
-      </div>
-      <div class="buttonSquare" onclick="alert('Game')">
-        <div class="buttonText">GAME</div>
-      </div>
-      <div class="buttonSquare" onclick="alert('Fault')">
-        <div class="buttonText">FAULT</div>
       </div>
     </div>
     <div class="footer">Arbitros DropShot</div>
@@ -100,6 +172,26 @@
           console.error("Error al reproducir el sonido:", error);
           alert("No se pudo reproducir el sonido. Verifica el archivo.");
         });
+    }
+
+    function incrementScore(type, value) {
+      const scoreElement = document.getElementById(type);
+      let currentScore = parseInt(scoreElement.innerText);
+      currentScore += value;
+      if (currentScore < 0) {
+        currentScore = 0;
+      }
+      scoreElement.innerText = currentScore;
+    }
+
+    function incrementPlayer(player, value) {
+      const scoreElement = document.getElementById(player);
+      let currentScore = parseInt(scoreElement.innerText);
+      currentScore += value;
+      if (currentScore < 0) {
+        currentScore = 0;
+      }
+      scoreElement.innerText = currentScore;
     }
   </script>
 </body>
